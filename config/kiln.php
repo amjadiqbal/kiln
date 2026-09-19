@@ -70,21 +70,44 @@ return [
     | Every generated URL MUST use URL::temporarySignedRoute() with a short
     | expiry, never the permanent URL::signedRoute() — a permanent signed URL
     | is a permanent unauthenticated credential the moment it leaks into a
-    | deploy log, shell history, or `ps` output. The `signed` middleware here
-    | is Kiln's own `RequireTemporarySignature`, which additionally rejects
-    | any otherwise-valid signature that has no `expires` parameter at all,
-    | so a permanent URL can't be used even by mistake.
+    | deploy log, shell history, or `ps` output. Every route runs Kiln's own
+    | `kiln.signed` middleware (RequireTemporarySignature), which validates
+    | the HMAC first and then additionally rejects any otherwise-valid
+    | signature that has no `expires` parameter at all, so a permanent URL
+    | can't be used even by mistake.
     |
     | No `web` middleware by default — this is a deploy-script endpoint, not
     | a browser one, and starting a session on every call needlessly couples
     | an ops endpoint to the session driver. Add 'web' yourself if you
     | genuinely want it (e.g. to layer on CSRF-aware tooling).
     |
+    | absolute_signature (default true, the strictest option): behind a
+    | reverse proxy that terminates TLS without TrustProxies configured
+    | correctly, the app can see the request as http:// on an internal host
+    | while the URL was signed against the public https:// host — the HMAC
+    | then never matches and every call 403s with "Invalid signature",
+    | indistinguishable from a wrong APP_KEY. Set this to false to validate
+    | only the path + query (immune to scheme/host rewriting) instead of
+    | the full absolute URL.
+    |
+    | IMPORTANT: this flag only changes how Kiln *validates* — it does not
+    | retroactively fix a URL that was already generated the other way. The
+    | $absolute flag is baked into the HMAC itself at generation time
+    | (Illuminate\Routing\UrlGenerator::temporarySignedRoute()'s own
+    | `$absolute = true` default), so if you set this to false you MUST also
+    | generate every URL with `absolute: false`:
+    |   URL::temporarySignedRoute('kiln.clear', now()->addMinutes(5), [], absolute: false)
+    | A URL generated the default (absolute) way will simply fail validation
+    | under relative mode, and vice versa — confirmed directly against real
+    | UrlGenerator source and a real request/response round-trip, not
+    | assumed.
+    |
     */
     'route' => [
         'enabled' => env('KILN_ROUTE_ENABLED', false),
         'prefix' => env('KILN_ROUTE_PREFIX', 'kiln'),
         'middleware' => [],
+        'absolute_signature' => env('KILN_ABSOLUTE_SIGNATURE', true),
     ],
 
 ];

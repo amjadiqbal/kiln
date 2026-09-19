@@ -7,7 +7,9 @@ use Illuminate\Console\Command;
 
 class WarmCommand extends Command
 {
-    protected $signature = 'kiln:warm {--vendor : Also warm vendor/ (overrides config kiln.warm_vendor)}';
+    protected $signature = 'kiln:warm
+        {--vendor : Also warm vendor/ (overrides config kiln.warm_vendor)}
+        {--time-limit= : Stop after this many seconds and report partial progress (default: no limit on the CLI — kiln.warm_time_limit only bounds the HTTP route)}';
 
     protected $description = 'Compile every configured .php file into OPcache without executing it';
 
@@ -41,8 +43,10 @@ class WarmCommand extends Command
             $paths
         );
 
-        $this->components->task('Warming OPcache', function () use ($opcache, $directories, &$result) {
-            $result = $opcache->warm($directories);
+        $timeLimit = $this->option('time-limit') !== null ? (int) $this->option('time-limit') : null;
+
+        $this->components->task('Warming OPcache', function () use ($opcache, $directories, $timeLimit, &$result) {
+            $result = $opcache->warm($directories, $timeLimit);
 
             return true;
         });
@@ -62,7 +66,7 @@ class WarmCommand extends Command
         }
 
         if ($result['timed_out']) {
-            $this->components->warn('Stopped early: warm_time_limit was reached before every file was compiled. Run again to continue, or raise kiln.warm_time_limit.');
+            $this->components->warn("Stopped early: the --time-limit={$timeLimit} was reached before every file was compiled. Run again to continue, or raise --time-limit.");
         }
 
         return self::SUCCESS;

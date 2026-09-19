@@ -23,7 +23,21 @@ class RequireTemporarySignature
 {
     public function handle(Request $request, Closure $next): Response
     {
-        if (! $request->hasValidSignature()) {
+        // Behind a reverse proxy that terminates TLS (e.g. CloudPanel/nginx/
+        // Cloudflare — see marketplaces/CLAUDE.md), the app can see the
+        // request as http:// on an internal host unless TrustProxies is
+        // configured correctly. The URL was signed against the public
+        // https:// host, absolute validation then compares against the
+        // internal http:// one, the HMAC never matches, and every call
+        // 403s with "Invalid signature" — indistinguishable from a wrong
+        // APP_KEY. Setting kiln.route.absolute_signature to false switches
+        // to relative (path + query only) validation, which is immune to
+        // scheme/host rewriting. Defaults to true (the strictest option).
+        $valid = config('kiln.route.absolute_signature', true)
+            ? $request->hasValidSignature()
+            : $request->hasValidSignature(absolute: false);
+
+        if (! $valid) {
             abort(403, 'Invalid signature.');
         }
 

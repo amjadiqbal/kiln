@@ -23,3 +23,15 @@ it('kiln:warm exits cleanly whether or not opcache is active in this process', f
     $this->artisan('kiln:warm')
         ->assertExitCode($manager->isActive() ? 0 : 1);
 });
+
+it('kiln:warm --time-limit=0 stops early and reports it, when opcache is active', function () {
+    $manager = app(OpcacheManager::class);
+
+    if (! $manager->isActive()) {
+        $this->markTestSkipped('opcache is not active for the CLI SAPI in this environment.');
+    }
+
+    $this->artisan('kiln:warm', ['--time-limit' => 0])
+        ->expectsOutputToContain('Stopped early')
+        ->assertSuccessful();
+});

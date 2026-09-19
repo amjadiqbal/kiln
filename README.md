@@ -106,6 +106,29 @@ can't pin an FPM worker for its entire duration — on a small pool that would b
 limit is hit, the response reports `"timed_out": true` with whatever partial progress it made;
 run it again to continue, or raise the limit.
 
+### Troubleshooting: every call gets "403 Invalid signature", but the URL and `APP_KEY` are correct
+
+This almost always means the app isn't seeing the same public scheme/host that the URL was
+signed against — typically a reverse proxy (CloudPanel/nginx, Cloudflare, or similar) terminating
+TLS and forwarding the request internally over plain HTTP without `TrustProxies` configured to
+read `X-Forwarded-Proto`/`X-Forwarded-Host`. Laravel's own signature check recomputes the full
+`scheme://host` from the request it actually receives; if that differs from what the URL was
+signed against, the HMAC will never match, no matter how correct `APP_KEY` and the URL are.
+
+Fix `TrustProxies` first if you can — it fixes every other absolute-URL-dependent thing in Laravel
+too, not just this. If that's not available to you, set:
+
+```env
+KILN_ABSOLUTE_SIGNATURE=false
+```
+
+and generate every URL with `absolute: false` too — **the flag must match on both ends**, since
+it's baked into the signature itself, not just how it's checked:
+
+```php
+URL::temporarySignedRoute('kiln.clear', now()->addMinutes(5), [], absolute: false)
+```
+
 ## Configuration
 
 ```php
@@ -118,6 +141,7 @@ return [
         'enabled' => env('KILN_ROUTE_ENABLED', false),
         'prefix' => env('KILN_ROUTE_PREFIX', 'kiln'),
         'middleware' => [], // add 'web' yourself if you genuinely want a session on this endpoint
+        'absolute_signature' => env('KILN_ABSOLUTE_SIGNATURE', true), // see Troubleshooting above
     ],
 ];
 ```
