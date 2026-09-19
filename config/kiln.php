@@ -34,6 +34,20 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Warm time limit (seconds)
+    |--------------------------------------------------------------------------
+    |
+    | A recursive warm over app/ (and optionally vendor/) run over HTTP inside
+    | an FPM worker can exceed max_execution_time and pin that worker for the
+    | whole walk — on a small pool that's an outage, not just a slow request.
+    | kiln:warm and the HTTP route both stop early once this many seconds have
+    | elapsed and report partial progress instead of running unbounded.
+    |
+    */
+    'warm_time_limit' => env('KILN_WARM_TIME_LIMIT', 20),
+
+    /*
+    |--------------------------------------------------------------------------
     | HTTP route
     |--------------------------------------------------------------------------
     |
@@ -48,11 +62,29 @@ return [
     | Disabled by default. Enable explicitly and keep it behind the signed
     | URL — do not expose it unsigned.
     |
+    | `clear` and `warm` are state-changing and registered as POST only, so
+    | link prefetchers, chat-app unfurlers, security scanners and proxies
+    | that blindly fetch GET URLs can't trigger them by accident. `status` is
+    | read-only and stays GET.
+    |
+    | Every generated URL MUST use URL::temporarySignedRoute() with a short
+    | expiry, never the permanent URL::signedRoute() — a permanent signed URL
+    | is a permanent unauthenticated credential the moment it leaks into a
+    | deploy log, shell history, or `ps` output. The `signed` middleware here
+    | is Kiln's own `RequireTemporarySignature`, which additionally rejects
+    | any otherwise-valid signature that has no `expires` parameter at all,
+    | so a permanent URL can't be used even by mistake.
+    |
+    | No `web` middleware by default — this is a deploy-script endpoint, not
+    | a browser one, and starting a session on every call needlessly couples
+    | an ops endpoint to the session driver. Add 'web' yourself if you
+    | genuinely want it (e.g. to layer on CSRF-aware tooling).
+    |
     */
     'route' => [
         'enabled' => env('KILN_ROUTE_ENABLED', false),
         'prefix' => env('KILN_ROUTE_PREFIX', 'kiln'),
-        'middleware' => ['web'],
+        'middleware' => [],
     ],
 
 ];

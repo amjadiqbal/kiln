@@ -12,16 +12,43 @@ jobs:
     runs-on: ubuntu-latest
 
     strategy:
+      fail-fast: false
       matrix:
-        php: [8.3, 8.4]
+        php: [8.3, 8.4, 8.5]
+        laravel: [12, 13]
 
     steps:
       - uses: actions/checkout@v5
+
       - uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
           extensions: opcache
           coverage: none
           ini-values: opcache.enable=1,opcache.enable_cli=1
-      - run: composer install --no-interaction --prefer-dist
+
+      - name: Pin Testbench to the Laravel version under test
+        # Laravel 12 -> orchestra/testbench ^10.0, Laravel 13 -> ^11.0. Without
+        # this, Composer always resolves the highest satisfiable set and the
+        # ^12.0 half of every illuminate/* constraint is never exercised.
+        run: |
+          if [ "${{ matrix.laravel }}" = "12" ]; then
+            composer require --dev "orchestra/testbench:^10.0" --no-update -W
+          else
+            composer require --dev "orchestra/testbench:^11.0" --no-update -W
+          fi
+
+      - name: Install dependencies
+        run: composer update --no-interaction --prefer-dist --prefer-stable
+
+      - name: Confirm the intended Laravel major was actually resolved
+        # illuminate/support isn't installed as its own package here — it's
+        # satisfied via laravel/framework's `replace` — confirmed by a real
+        # `composer show illuminate/support` failing locally with "not
+        # found" even though the constraint resolves fine. Check
+        # laravel/framework's own version instead.
+        run: composer show laravel/framework | grep -E "^versions" | grep -q "\* v${{ matrix.laravel }}\." || (composer show laravel/framework && exit 1)
+
       - run: composer test
+      - run: composer pint
+      - run: composer analyse

@@ -61,6 +61,10 @@ class WarmCommand extends Command
             }
         }
 
+        if ($result['timed_out']) {
+            $this->components->warn('Stopped early: warm_time_limit was reached before every file was compiled. Run again to continue, or raise kiln.warm_time_limit.');
+        }
+
         return self::SUCCESS;
     }
 }

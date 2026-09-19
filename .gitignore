@@ -1,5 +1,6 @@
 /vendor
 /node_modules
+/build
 composer.lock
 .phpunit.cache
 .DS_Store

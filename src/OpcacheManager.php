@@ -136,15 +136,33 @@ class OpcacheManager
      * Warm every .php file found under the given directories.
      *
      * @param  string[]  $directories  Absolute paths to walk.
-     * @return array{compiled: int, skipped: int, failed: array<string, string>}
+     * @param  int|null  $timeLimit  Seconds. A recursive warm run inside an
+     *                               FPM worker (over the HTTP route) can
+     *                               otherwise exceed max_execution_time and
+     *                               pin that worker for the whole walk — on
+     *                               a small pool that's an outage. Once
+     *                               elapsed, the run stops and reports
+     *                               `timed_out => true` with whatever
+     *                               partial progress it made instead of
+     *                               running unbounded. Null disables the
+     *                               guard (used by kiln:warm on the CLI,
+     *                               where there's no worker to pin).
+     * @return array{compiled: int, skipped: int, failed: array<string, string>, timed_out: bool}
      */
-    public function warm(array $directories): array
+    public function warm(array $directories, ?int $timeLimit = null): array
     {
         $compiled = 0;
         $skipped = 0;
         $failed = [];
+        $timedOut = false;
+        $deadline = $timeLimit !== null ? microtime(true) + $timeLimit : null;
 
         foreach ($this->phpFilesIn($directories) as $file) {
+            if ($deadline !== null && microtime(true) >= $deadline) {
+                $timedOut = true;
+                break;
+            }
+
             $path = $file->getPathname();
             $result = $this->compileFile($path);
 
@@ -157,7 +175,7 @@ class OpcacheManager
             }
         }
 
-        return ['compiled' => $compiled, 'skipped' => $skipped, 'failed' => $failed];
+        return ['compiled' => $compiled, 'skipped' => $skipped, 'failed' => $failed, 'timed_out' => $timedOut];
     }
 
     /**

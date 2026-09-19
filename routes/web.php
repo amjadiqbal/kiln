@@ -9,25 +9,31 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 |
 | Registered only when kiln.route.enabled is true (see config/kiln.php).
-| Every route requires a valid signed URL — generate one with
-| URL::signedRoute('kiln.clear') from a deploy script or scheduled job,
-| never expose these unsigned.
+| Every route requires a valid TEMPORARY signed URL — generate one with
+| URL::temporarySignedRoute('kiln.clear', now()->addMinutes(5)) from a
+| deploy script or scheduled job. URL::signedRoute() (no expiry) is
+| rejected by the `kiln.signed` middleware even if the signature itself is
+| otherwise valid — see RequireTemporarySignature for why.
+|
+| `clear` and `warm` are state-changing and POST-only, so a GET request
+| from a link prefetcher, chat unfurler, security scanner or proxy can't
+| trigger them. `status` is read-only and stays GET.
 |
 */
 
-Route::middleware(config('kiln.route.middleware', ['web']))
+Route::middleware(config('kiln.route.middleware', []))
     ->prefix(config('kiln.route.prefix', 'kiln'))
     ->name('kiln.')
     ->group(function () {
-        Route::get('opcache/clear', [OpcacheController::class, 'clear'])
+        Route::post('opcache/clear', [OpcacheController::class, 'clear'])
             ->name('clear')
-            ->middleware('signed');
+            ->middleware('kiln.signed');
 
-        Route::get('opcache/warm', [OpcacheController::class, 'warm'])
+        Route::post('opcache/warm', [OpcacheController::class, 'warm'])
             ->name('warm')
-            ->middleware('signed');
+            ->middleware('kiln.signed');
 
         Route::get('opcache/status', [OpcacheController::class, 'status'])
             ->name('status')
-            ->middleware('signed');
+            ->middleware('kiln.signed');
     });

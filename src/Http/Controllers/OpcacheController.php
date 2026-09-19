@@ -40,7 +40,10 @@ class OpcacheController extends Controller
 
         $directories = array_map(fn (string $path) => base_path($path), $paths);
 
-        $result = $opcache->warm($directories);
+        // Guarded by kiln.warm_time_limit — running unbounded here would pin
+        // this FPM worker for the whole recursive walk, a real outage risk
+        // on a small pool. See OpcacheManager::warm()'s docblock.
+        $result = $opcache->warm($directories, (int) config('kiln.warm_time_limit', 20));
 
         return response()->json(['ok' => true] + $result);
     }

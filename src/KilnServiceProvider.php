@@ -6,6 +6,8 @@ use AmjadIqbal\Kiln\Commands\ClearCommand;
 use AmjadIqbal\Kiln\Commands\ConfigCommand;
 use AmjadIqbal\Kiln\Commands\StatusCommand;
 use AmjadIqbal\Kiln\Commands\WarmCommand;
+use AmjadIqbal\Kiln\Http\Middleware\RequireTemporarySignature;
+use Illuminate\Routing\Router;
 use Illuminate\Support\ServiceProvider;
 
 class KilnServiceProvider extends ServiceProvider
@@ -33,6 +35,8 @@ class KilnServiceProvider extends ServiceProvider
         }
 
         if (config('kiln.route.enabled')) {
+            $this->app[Router::class]->aliasMiddleware('kiln.signed', RequireTemporarySignature::class);
+
             $this->loadRoutesFrom(__DIR__.'/../routes/web.php');
         }
     }

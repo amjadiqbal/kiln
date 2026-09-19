@@ -39,7 +39,23 @@ it('warm() reports zero compiled files for an empty directory list', function ()
 
     $result = $manager->warm([]);
 
-    expect($result)->toBe(['compiled' => 0, 'skipped' => 0, 'failed' => []]);
+    expect($result)->toBe(['compiled' => 0, 'skipped' => 0, 'failed' => [], 'timed_out' => false]);
+});
+
+it('warm() stops early and reports timed_out when the time limit is exceeded', function () {
+    $manager = new OpcacheManager;
+
+    if (! $manager->isActive()) {
+        $this->markTestSkipped('opcache is not active for the CLI SAPI in this environment.');
+    }
+
+    // A 0-second limit expires before the very first file, so this proves
+    // the guard actually stops the walk rather than merely accepting the
+    // parameter.
+    $result = $manager->warm([__DIR__], 0);
+
+    expect($result['timed_out'])->toBeTrue();
+    expect($result['compiled'])->toBe(0);
 });
 
 it('configuration() returns null only when the extension is not loaded', function () {
