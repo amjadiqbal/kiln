@@ -24,6 +24,18 @@ class OpcacheManager
      * method below is a silent no-op when this is false, exactly like the
      * underlying opcache_* functions are, so callers must check this first
      * rather than trust a bare true/false return.
+     *
+     * The PHP_SAPI check is deliberately `=== 'cli'`, not a broader match
+     * that would also catch `cli-server` (the `php artisan serve` /
+     * `php -S` built-in web server). Confirmed by real measurement, not
+     * assumed: opcache.enable_cli does NOT gate `cli-server` on this PHP
+     * build — a real `opcache_compile_file()`/`opcache_reset()` round-trip
+     * under `cli-server` with opcache.enable_cli=0 genuinely compiled and
+     * reset OPcache. See research/kiln-opcache-behavior.md for the exact
+     * commands and output. Broadening this check to `cli-server` would
+     * have made kiln:warm/kiln:clear (run via `php artisan serve` for
+     * local testing) incorrectly report "not active" when OPcache was, in
+     * fact, working.
      */
     public function isActive(): bool
     {
