@@ -175,27 +175,20 @@ composer analyse     # Larastan/PHPStan
 Every push and pull request runs the full suite across PHP 8.3/8.4/8.5 × Laravel 12/13 (6
 combinations) before anything merges — see the badge above.
 
-## Support
+## Support & Community
 
-### Documentation
+### Custom Development
+[Hire me on Upwork](https://www.upwork.com/freelancers/amjadkhatri) for:
+- Package integration
+- Custom feature development
+- Technical consultation
+- Project implementation
 
-Everything you need is in this README. If something's unclear or you hit a case it doesn't
-cover, [open an issue](https://github.com/AmjadIqbal/kiln/issues) — that's also how the docs get
-better for the next person.
+### Community Support
+- [Discord Community](https://discord.com/channels/1352854772859932702/1352854916690874388)
+- [GitHub Issues](https://github.com/amjadiqbal/kiln/issues)
 
-### Community
-
-- [Report a bug or request a feature](https://github.com/AmjadIqbal/kiln/issues)
-- [Discussions](https://github.com/AmjadIqbal/kiln/discussions) for questions and usage help
-
-### Professional support
-
-Need this integrated into a real deploy pipeline, a custom variant, or ongoing Laravel/DevOps
-help beyond what's in this README?
-
-- **Hire me on Upwork**: [upwork.com/freelancers/amjadkhatri](https://www.upwork.com/freelancers/amjadkhatri)
-- **Website**: [amjad.com.pk](https://amjad.com.pk)
-- **Email**: [Discord](https://discord.com/channels/1352854772859932702/1352854916690874388) · [Upwork](https://www.upwork.com/freelancers/amjadkhatri)
+For priority support and enterprise solutions, please reach out via Upwork for direct assistance.
 
 ## Changelog
 
