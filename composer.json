@@ -4,14 +4,23 @@
     "type": "library",
     "license": "MIT",
     "keywords": [
+        "amjadiqbal",
         "laravel",
+        "laravel-package",
         "opcache",
+        "opcache-clear",
         "cache",
+        "cache-invalidation",
         "deployment",
         "deploy",
+        "devops",
         "performance",
         "php-fpm",
-        "artisan"
+        "fpm",
+        "artisan",
+        "artisan-command",
+        "octane",
+        "zero-downtime-deploy"
     ],
     "homepage": "https://github.com/AmjadIqbal/kiln",
     "authors": [

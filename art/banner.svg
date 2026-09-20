@@ -1,0 +1,58 @@
+<svg width="1280" height="360" viewBox="0 0 1280 360" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#1e1b2e"/>
+    </linearGradient>
+    <linearGradient id="flame" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" stop-color="#f97316"/>
+      <stop offset="55%" stop-color="#fb923c"/>
+      <stop offset="100%" stop-color="#fde68a"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#f97316" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#f97316" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="1280" height="360" fill="url(#bg)"/>
+  <circle cx="180" cy="180" r="220" fill="url(#glow)"/>
+
+  <!-- kiln / flame mark -->
+  <g transform="translate(90,110)">
+    <path d="M45 20
+             C20 55 15 85 30 115
+             C10 130 5 155 20 175
+             C40 200 90 200 105 175
+             C120 150 115 125 95 110
+             C110 95 105 65 80 45
+             C85 65 70 75 60 65
+             C65 50 60 35 45 20 Z"
+          fill="url(#flame)"/>
+    <ellipse cx="60" cy="150" rx="34" ry="18" fill="#0f172a" opacity="0.25"/>
+  </g>
+
+  <!-- wordmark -->
+  <text x="230" y="175" font-family="Helvetica, Arial, sans-serif" font-size="88" font-weight="700" fill="#f8fafc">Kiln</text>
+  <text x="234" y="225" font-family="Helvetica, Arial, sans-serif" font-size="27" font-weight="500" fill="#fdba74" letter-spacing="0.3">
+    Deploy-Time OPcache Control for Laravel
+  </text>
+
+  <!-- feature chips -->
+  <g font-family="Helvetica, Arial, sans-serif" font-size="18" font-weight="600" fill="#cbd5e1">
+    <g transform="translate(234,268)">
+      <rect width="150" height="38" rx="19" fill="#1e293b" stroke="#334155"/>
+      <text x="75" y="25" text-anchor="middle">artisan-first</text>
+    </g>
+    <g transform="translate(398,268)">
+      <rect width="176" height="38" rx="19" fill="#1e293b" stroke="#334155"/>
+      <text x="88" y="25" text-anchor="middle">FPM-safe HTTP route</text>
+    </g>
+    <g transform="translate(588,268)">
+      <rect width="150" height="38" rx="19" fill="#1e293b" stroke="#334155"/>
+      <text x="75" y="25" text-anchor="middle">zero Guzzle</text>
+    </g>
+  </g>
+
+  <text x="1250" y="335" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="17" fill="#64748b">amjadiqbal/kiln</text>
+</svg>
