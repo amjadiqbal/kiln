@@ -16,6 +16,8 @@ every deploy, your app keeps serving stale bytecode until the process pool resta
 [![PHP Version](https://img.shields.io/packagist/php-v/amjadiqbal/kiln?style=flat-square)](https://packagist.org/packages/amjadiqbal/kiln)
 [![License](https://img.shields.io/packagist/l/amjadiqbal/kiln.svg?style=flat-square)](LICENSE.md)
 
+**Docs and demo:** [amjad.com.pk/laravel/packages/kiln](https://amjad.com.pk/laravel/packages/kiln)
+
 ## Features
 
 - `kiln:clear`, `kiln:warm`, `kiln:status`, `kiln:config` — four focused artisan commands, no bloat.

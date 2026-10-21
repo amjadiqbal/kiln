@@ -22,7 +22,7 @@
         "octane",
         "zero-downtime-deploy"
     ],
-    "homepage": "https://github.com/AmjadIqbal/kiln",
+    "homepage": "https://amjad.com.pk/laravel/packages/kiln",
     "authors": [
         {
             "name": "Amjad Iqbal",
@@ -32,7 +32,8 @@
     ],
     "support": {
         "issues": "https://github.com/AmjadIqbal/kiln/issues",
-        "source": "https://github.com/AmjadIqbal/kiln"
+        "source": "https://github.com/AmjadIqbal/kiln",
+        "docs": "https://amjad.com.pk/laravel/packages/kiln"
     },
     "require": {
         "php": "^8.3|^8.4|^8.5",
