@@ -81,8 +81,9 @@ run (unlimited by default on the CLI):
 php artisan kiln:warm --time-limit=15
 ```
 
-Every command warns explicitly when it detects it's running under the CLI SAPI, since that's the
-process whose OPcache doesn't matter for production traffic.
+`kiln:clear` and `kiln:warm` warn every time they run under the CLI SAPI, since that's the process whose
+OPcache doesn't matter for production traffic. `kiln:status` warns only when OPcache is inactive in the CLI
+(`opcache.enable_cli=0`). `kiln:config` doesn't warn about the SAPI; it only reads the ini settings.
 
 ## The HTTP route — for real FPM deploys
 
@@ -169,7 +170,7 @@ return [
     'route' => [
         'enabled' => env('KILN_ROUTE_ENABLED', false),
         'prefix' => env('KILN_ROUTE_PREFIX', 'kiln'),
-        'middleware' => [], // add 'web' yourself if you genuinely want a session on this endpoint
+        'middleware' => [], // e.g. ['throttle:10,1']; don't add 'web' (its CSRF check rejects the POST with 419)
         'absolute_signature' => env('KILN_ABSOLUTE_SIGNATURE', true), // see Troubleshooting above
     ],
 ];
@@ -187,7 +188,6 @@ scripts/ci-local.sh   # PHP 8.3 / 8.4 / 8.5 x Laravel 12 / 13, the whole matrix
 ## Support
 
 - 🐛 **Bug or feature request** — [open an issue](https://github.com/amjadiqbal/kiln/issues)
-- 💬 **Questions** — [message me on Discord](https://discord.com/users/412244229520359434)
 - 🔒 **Security issue** — please report privately via GitHub's security tab
 
 ## Need this customised, or something built?
@@ -195,7 +195,6 @@ scripts/ci-local.sh   # PHP 8.3 / 8.4 / 8.5 x Laravel 12 / 13, the whole matrix
 I'm available for custom development, package integration, and technical consulting.
 
 [![Hire me on Upwork](https://img.shields.io/badge/Hire%20me-Upwork-6FDA44?style=flat-square&logo=upwork&logoColor=white)](https://www.upwork.com/freelancers/amjadkhatri)
-[![Discord](https://img.shields.io/badge/Discord-Message%20me-5865F2?style=flat-square&logo=discord&logoColor=white)](https://discord.com/users/412244229520359434)
 
 ## More packages
 

@@ -76,10 +76,11 @@ return [
     | signature that has no `expires` parameter at all, so a permanent URL
     | can't be used even by mistake.
     |
-    | No `web` middleware by default — this is a deploy-script endpoint, not
-    | a browser one, and starting a session on every call needlessly couples
-    | an ops endpoint to the session driver. Add 'web' yourself if you
-    | genuinely want it (e.g. to layer on CSRF-aware tooling).
+    | No `web` middleware by default, and don't add it: this is a deploy-script
+    | endpoint, and the web group's CSRF check rejects the documented
+    | `curl -X POST` with a 419 (the request carries a signature, not a CSRF
+    | token). Extra middleware that doesn't need a session is fine, e.g.
+    | ['throttle:10,1'] to rate-limit the endpoint.
     |
     | absolute_signature (default true, the strictest option): behind a
     | reverse proxy that terminates TLS without TrustProxies configured
