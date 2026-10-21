@@ -1,0 +1,26 @@
+<svg width="1200" height="300" viewBox="0 0 1200 300" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0B1220"/>
+      <stop offset="100%" stop-color="#111C33"/>
+    </linearGradient>
+    <linearGradient id="ember" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" stop-color="#FF6A00"/>
+      <stop offset="100%" stop-color="#FFB000"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="300" fill="url(#bg)"/>
+  <g transform="translate(60,80)">
+    <rect x="0" y="58" width="125" height="83" rx="8" fill="#334155"/>
+    <rect x="8" y="66" width="109" height="67" rx="5" fill="#1E293B"/>
+    <path d="M62 12 C42 38 38 58 50 79 C35 90 32 107 42 121 C54 138 88 138 99 121 C109 106 105 90 91 80 C101 70 97 50 80 35 C83 48 73 55 66 48 C69 39 66 27 62 12 Z" fill="url(#ember)"/>
+  </g>
+  <text x="235" y="150" font-family="Helvetica, Arial, sans-serif" font-size="72" font-weight="700" fill="#F8FAFC">Kiln</text>
+  <text x="238" y="192" font-family="Helvetica, Arial, sans-serif" font-size="23" font-weight="600" fill="#FF8A3D" letter-spacing="0.3">Deploy-Time OPcache Control for Laravel</text>
+  <g font-family="Helvetica, Arial, sans-serif" font-size="15" font-weight="600" fill="#CBD5E1" text-anchor="middle">
+    <g transform="translate(238,220)"><rect width="140" height="32" rx="16.0" fill="#16213A" stroke="#24324F"/><text x="70.0" y="21.2">artisan-first</text></g>
+    <g transform="translate(388,220)"><rect width="176" height="32" rx="16.0" fill="#16213A" stroke="#24324F"/><text x="88.0" y="21.2">FPM-safe HTTP route</text></g>
+    <g transform="translate(574,220)"><rect width="170" height="32" rx="16.0" fill="#16213A" stroke="#24324F"/><text x="85.0" y="21.2">no Guzzle ceiling</text></g>
+  </g>
+  <text x="1170" y="275" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="15" fill="#64748B">amjadiqbal/kiln</text>
+</svg>

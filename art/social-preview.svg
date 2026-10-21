@@ -1,0 +1,26 @@
+<svg width="1280" height="640" viewBox="0 0 1280 640" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0B1220"/>
+      <stop offset="100%" stop-color="#111C33"/>
+    </linearGradient>
+    <linearGradient id="ember" x1="0%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" stop-color="#FF6A00"/>
+      <stop offset="100%" stop-color="#FFB000"/>
+    </linearGradient>
+  </defs>
+  <rect width="1280" height="640" fill="url(#bg)"/>
+  <g transform="translate(490,40)">
+    <rect x="0" y="104" width="300" height="200" rx="18" fill="#334155"/>
+    <rect x="18" y="122" width="264" height="164" rx="12" fill="#1E293B"/>
+    <path d="M150 24 C102 90 92 140 118 190 C86 214 78 254 100 290 C130 328 216 328 240 290 C264 252 254 214 220 192 C244 168 234 122 194 84 C200 116 176 132 160 116 C168 94 160 68 150 24 Z" fill="url(#ember)"/>
+  </g>
+  <text x="640" y="450" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="96" font-weight="700" fill="#F8FAFC">Kiln</text>
+  <text x="640" y="500" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="28" font-weight="600" fill="#FF8A3D" letter-spacing="0.3">Deploy-Time OPcache Control for Laravel</text>
+  <g font-family="Helvetica, Arial, sans-serif" font-size="17" font-weight="600" fill="#CBD5E1" text-anchor="middle">
+    <g transform="translate(341,536)"><rect width="160" height="38" rx="19.0" fill="#16213A" stroke="#24324F"/><text x="80.0" y="24.9">artisan-first</text></g>
+    <g transform="translate(516,536)"><rect width="206" height="38" rx="19.0" fill="#16213A" stroke="#24324F"/><text x="103.0" y="24.9">FPM-safe HTTP route</text></g>
+    <g transform="translate(737,536)"><rect width="196" height="38" rx="19.0" fill="#16213A" stroke="#24324F"/><text x="98.0" y="24.9">no Guzzle ceiling</text></g>
+  </g>
+  <text x="640" y="605" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="19" fill="#64748B">github.com/amjadiqbal/kiln</text>
+</svg>

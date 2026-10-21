@@ -1,16 +1,20 @@
-# Kiln: Deploy-Time OPcache Control for Laravel
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="art/banner-dark.png">
+    <img alt="Kiln — Deploy-Time OPcache Control for Laravel" src="art/banner-light.png" width="100%">
+  </picture>
+</p>
 
-![Kiln banner](art/banner.svg)
+# Kiln: Deploy-Time OPcache Control for Laravel
 
 Artisan commands (and an optional signed HTTP route) to clear, warm, and inspect PHP's OPcache
 for Laravel apps deployed with `opcache.validate_timestamps=0` — the recommended production
 setting under Octane, FrankenPHP, or any standard FPM deploy. Without invalidating OPcache on
 every deploy, your app keeps serving stale bytecode until the process pool restarts.
 
-[![Tests](https://github.com/AmjadIqbal/kiln/actions/workflows/ci.yml/badge.svg)](https://github.com/AmjadIqbal/kiln/actions/workflows/ci.yml)
-[![Latest Version](https://img.shields.io/packagist/v/amjadiqbal/kiln.svg)](https://packagist.org/packages/amjadiqbal/kiln)
-[![Total Downloads](https://img.shields.io/packagist/dt/amjadiqbal/kiln.svg)](https://packagist.org/packages/amjadiqbal/kiln)
-[![License](https://img.shields.io/packagist/l/amjadiqbal/kiln.svg)](https://github.com/AmjadIqbal/kiln/blob/main/LICENSE.md)
+[![Latest Version](https://img.shields.io/packagist/v/amjadiqbal/kiln.svg?style=flat-square)](https://packagist.org/packages/amjadiqbal/kiln)
+[![PHP Version](https://img.shields.io/packagist/php-v/amjadiqbal/kiln?style=flat-square)](https://packagist.org/packages/amjadiqbal/kiln)
+[![License](https://img.shields.io/packagist/l/amjadiqbal/kiln.svg?style=flat-square)](LICENSE.md)
 
 ## Features
 
@@ -19,15 +23,22 @@ every deploy, your app keeps serving stale bytecode until the process pool resta
   an FPM worker pool's shared OPcache from a CLI deploy script.
 - Every signed URL is required to be temporary — a dedicated middleware refuses a permanent one
   even if it's otherwise valid, closing a real leaked-credential risk before it can happen.
-- Zero HTTP client dependency — no Guzzle, unlike the incumbent this replaces.
-- PHP 8.3–8.5, Laravel 12 and 13, CI-verified on every combination before every release.
+- No HTTP client of its own: Kiln never calls out over HTTP (the optional route is served by your own app) and sets no
+  Guzzle version constraint. Guzzle only comes in through Laravel's own `illuminate/http`, so Kiln can't hit the Guzzle
+  version ceiling that blocks the older package below.
+- PHP 8.3–8.5, Laravel 12 and 13, tested on every combination before each release (`scripts/ci-local.sh`).
 
 ## Why this exists
 
-`appstract/laravel-opcache` did this job for years (138k+ downloads/month) but has been dead
-since December 2020 and pins `guzzlehttp/guzzle: ^6.3.1|^7.0` — a version ceiling Guzzle has long
-since moved past, which means **it cannot even be installed** on a current Laravel app. Kiln is a
-from-scratch replacement targeting PHP 8.3+ and Laravel 12/13, with zero HTTP client dependency.
+`appstract/laravel-opcache` did this job for years (about 137k downloads a month on Packagist), but its last release,
+4.0.2, shipped in December 2020. It requires `guzzlehttp/guzzle: ^6.3.1|^7.0`, and a fresh Laravel 13 app ships Guzzle
+8, so 4.0.2 cannot be installed there. A plain `composer require appstract/laravel-opcache` on Laravel 13 does not fail,
+though: Composer quietly falls back to 2.0.5 (December 2019) plus `appstract/lush-http`, which Packagist lists as
+abandoned. On Laravel 12 (Guzzle 7) 4.0.2 still installs.
+
+Kiln is a from-scratch replacement for PHP 8.3+ and Laravel 12/13. It sets no Guzzle constraint of its own.
+
+<sub>Checked in October 2026 on fresh `laravel/laravel` 12.70 and 13.38 apps with an empty Composer cache.</sub>
 
 ## The one thing you need to understand before using this
 
@@ -167,43 +178,44 @@ return [
 ## Testing
 
 ```bash
-composer test       # Pest, via Orchestra Testbench
-composer pint        # Laravel Pint, --test mode
-composer analyse     # Larastan/PHPStan
+composer test         # Pest, via Orchestra Testbench
+composer pint         # Laravel Pint, --test mode
+composer analyse      # Larastan/PHPStan
+scripts/ci-local.sh   # PHP 8.3 / 8.4 / 8.5 x Laravel 12 / 13, the whole matrix
 ```
 
-Every push and pull request runs the full suite across PHP 8.3/8.4/8.5 × Laravel 12/13 (6
-combinations) before anything merges — see the badge above.
+## Support
 
-## Support & Community
+- 🐛 **Bug or feature request** — [open an issue](https://github.com/amjadiqbal/kiln/issues)
+- 💬 **Questions** — [message me on Discord](https://discord.com/users/412244229520359434)
+- 🔒 **Security issue** — please report privately via GitHub's security tab
 
-### Custom Development
-[Hire me on Upwork](https://www.upwork.com/freelancers/amjadkhatri) for:
-- Package integration
-- Custom feature development
-- Technical consultation
-- Project implementation
+## Need this customised, or something built?
 
-### Community Support
-- [Discord Community](https://discord.com/channels/1352854772859932702/1352854916690874388)
-- [GitHub Issues](https://github.com/amjadiqbal/kiln/issues)
+I'm available for custom development, package integration, and technical consulting.
 
-For priority support and enterprise solutions, please reach out via Upwork for direct assistance.
+[![Hire me on Upwork](https://img.shields.io/badge/Hire%20me-Upwork-6FDA44?style=flat-square&logo=upwork&logoColor=white)](https://www.upwork.com/freelancers/amjadkhatri)
+[![Discord](https://img.shields.io/badge/Discord-Message%20me-5865F2?style=flat-square&logo=discord&logoColor=white)](https://discord.com/users/412244229520359434)
+
+## More packages
+
+Part of a family of open-source Laravel packages — see [all of them](https://github.com/amjadiqbal?tab=repositories).
+
+| | |
+|---|---|
+| [laravel-logpulse](https://github.com/amjadiqbal/laravel-logpulse) | Proactive log health monitoring & intelligent alerting |
+| [refresher](https://github.com/amjadiqbal/refresher) | Cache your test DB schema, skip `migrate:fresh` on every test run |
+| [laralink](https://github.com/amjadiqbal/laralink) | Local-first package manager for Laravel |
+| [laravel-tiptap](https://github.com/amjadiqbal/laravel-tiptap) | Tiptap editor with backend-driven config and secure uploads |
+| [laravel-rough-notation](https://github.com/amjadiqbal/laravel-rough-notation) | Hand-drawn Rough Notation annotations for Blade/Livewire |
 
 ## Changelog
 
 Please see [CHANGELOG.md](CHANGELOG.md) for details on what changed in each release.
 
-## Security
-
-If you discover a security vulnerability, please reach out privately via
-[Discord](https://discord.com/channels/1352854772859932702/1352854916690874388) or
-[Upwork](https://www.upwork.com/freelancers/amjadkhatri) instead of opening a public issue. It
-will be addressed promptly.
-
 ## Contributing
 
-Contributions, issues, and feature requests are welcome — see [open issues](https://github.com/AmjadIqbal/kiln/issues)
+Contributions, issues, and feature requests are welcome — see [open issues](https://github.com/amjadiqbal/kiln/issues)
 or open a pull request.
 
 ## License
